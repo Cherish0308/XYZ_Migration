@@ -1,0 +1,7 @@
+boto3
+botocore
+pydantic
+pydantic-settings
+pytest
+pytest-mock
+psycopg2-binary
