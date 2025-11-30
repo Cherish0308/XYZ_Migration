@@ -4,6 +4,7 @@ import csv
 import io
 import logging
 import urllib.parse
+
 from typing import Any, Dict, List
 
 from app.config import AppConfig
