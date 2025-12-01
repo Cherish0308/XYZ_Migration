@@ -14,10 +14,7 @@ Today, the core pricing and utilization analytics run in **Snowflake**. XYZ is m
 
 This codebase simulates a **Snowflake → Redshift** migration for the **dynamic pricing & utilization engine**, using Python 3, S3 and AWS Lambda with a SOLID, testable architecture.
 
-It is designed as a portfolio-quality repository that shows how I would structure a real-world migration project for a role like:
-
-- **Senior Data Engineer – Snowflake / Redshift Migration**
-- **AWS Data Engineer – Redshift & S3-based Data Warehouse**
+It is designed as a portfolio-quality repository that shows how I would structure a real-world migration project
 
 
 ## 2. Business Problem
