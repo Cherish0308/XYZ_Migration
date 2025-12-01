@@ -5,12 +5,7 @@ from typing import Dict, List, Optional, Protocol, Tuple
 
 
 class ObjectStorageRepository(Protocol):
-    """
-    Abstraction over S3-like object storage.
-
-    Services depend on this interface; the concrete implementation
-    (boto3-based S3) lives in a separate module.
-    """
+    
 
     def read_text(self, bucket: str, key: str) -> str:
         ...
@@ -32,9 +27,7 @@ class ObjectStorageRepository(Protocol):
 
 
 class WarehouseRepository(Protocol):
-    """
-    Abstraction over a Redshift-like warehouse.
-    """
+    
 
     def copy_from_s3(
         self,
@@ -54,11 +47,7 @@ class WarehouseRepository(Protocol):
 
 
 class MetadataRepository(ABC):
-    """
-    Source of table schemas and mappings (Snowflake → Redshift).
-
-    Implementations could be in-memory, Glue, dbt manifest, etc.
-    """
+    
 
     @abstractmethod
     def get_table_schema(self, table_name: str) -> Dict[str, str]:

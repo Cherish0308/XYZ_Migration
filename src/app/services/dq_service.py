@@ -6,13 +6,7 @@ from typing import Any, Dict, List
 
 @dataclass
 class TableDQResult:
-    """
-    Simple reconciliation summary between baseline and migrated data.
-
-    This is intentionally generic and in-memory. Another layer (not here)
-    can be responsible for fetching data from Snowflake exports / Redshift
-    and feeding it into this service.
-    """
+    
 
     table_name: str
     baseline_row_count: int
@@ -26,18 +20,7 @@ class TableDQResult:
 
 
 class DQService:
-    """
-    Data quality / reconciliation calculations.
-
-    Input:
-      - baseline_rows: list of dicts (Snowflake export, already typed)
-      - migrated_rows: list of dicts (Redshift query results, already typed)
-      - numeric_columns: which columns to compare by sum
-      - tolerance_pct: allowed percentage diff for sums and row counts
-
-    Output:
-      - TableDQResult with pass/fail and detailed metrics.
-    """
+    
 
     def reconcile_table(
         self,

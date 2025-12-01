@@ -6,20 +6,10 @@ from app.exceptions import BusinessRuleViolation
 
 
 class BusinessValidator:
-    """
-    Domain-specific validation rules for XYZ's pricing & utilization data.
-
-    This is intentionally separate from SchemaValidator so we keep
-    responsibilities small and clear (SRP).
-    """
+    
 
     def validate(self, table_name: str, record: Dict[str, Any]) -> None:
-        """
-        Dispatch to a table-specific validator.
-
-        `record` is expected to be a dict of already schema-filtered values
-        (string-typed from CSV, or partially converted by the caller).
-        """
+        
         if table_name == "utilization_history":
             self._validate_utilization_history(record)
         elif table_name == "pricing_rules":

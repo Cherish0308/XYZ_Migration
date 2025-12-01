@@ -7,11 +7,7 @@ from typing import Any, Dict
 
 
 class JsonLogFormatter(logging.Formatter):
-    """
-    Simple JSON formatter so our logs are structured in CloudWatch.
-
-    Every log line becomes a single JSON object with consistent fields.
-    """
+    
 
     def format(self, record: logging.LogRecord) -> str:  # type: ignore[override]
         payload: Dict[str, Any] = {
@@ -38,11 +34,7 @@ class JsonLogFormatter(logging.Formatter):
 
 
 def configure_logging(app_name: str, level: str = "INFO") -> None:
-    """
-    Configure the root logger once for the whole process.
-
-    Idempotent: calling it multiple times will not duplicate handlers.
-    """
+    
     root = logging.getLogger()
     if getattr(root, "_xyz_configured", False):
         return

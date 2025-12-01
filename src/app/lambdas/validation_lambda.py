@@ -27,12 +27,7 @@ def _build_validation_service() -> ValidationService:
 
 
 def _extract_table_and_period_from_key(raw_prefix: str, key: str) -> Dict[str, str]:
-    """
-    Expect keys like:
-      raw/<table_name>/forecast_period=YYYY-MM/filename.csv
-
-    This keeps parsing logic in one place for easier refactoring later.
-    """
+    
     # Remove any leading prefix like "raw/"
     if key.startswith(raw_prefix + "/"):
         suffix = key[len(raw_prefix) + 1 :]
@@ -55,16 +50,7 @@ def _extract_table_and_period_from_key(raw_prefix: str, key: str) -> Dict[str, s
 
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    """
-    S3-triggered Lambda:
-
-    - Reads CSV from raw prefix
-    - Validates schema + business rules
-    - Copies file to:
-        - validated prefix if all rows pass
-        - error prefix if any row fails
-    - Writes a small JSON validation report to recon prefix
-    """
+   
     # Bootstrap config + logging
     config = AppConfig.from_env()
     configure_logging(config.app_name, config.log_level)
@@ -172,7 +158,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     "outcome": "ERROR",
                 }
             )
-        except Exception as exc:  # pragma: no cover (safety net)
+        except Exception as exc:  
             logger.exception(
                 "Unexpected exception during validation",
                 extra={"bucket": bucket, "key": key},

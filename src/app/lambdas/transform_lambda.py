@@ -23,10 +23,7 @@ def _build_transformation_service() -> TransformationService:
 
 
 def _extract_table_and_period_from_key(validated_prefix: str, key: str) -> Dict[str, str]:
-    """
-    Expect keys like:
-      validated/<table_name>/forecast_period=YYYY-MM/filename.csv
-    """
+    
     if key.startswith(validated_prefix + "/"):
         suffix = key[len(validated_prefix) + 1 :]
     else:
@@ -47,15 +44,7 @@ def _extract_table_and_period_from_key(validated_prefix: str, key: str) -> Dict[
 
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    """
-    S3-triggered Lambda:
-
-    - Reads CSV from validated prefix
-    - Type-transforms rows according to logical schema
-    - Writes normalized CSV to transformed prefix
-
-    This keeps Redshift load downstream simple and consistent.
-    """
+    
     config = AppConfig.from_env()
     configure_logging(config.app_name, config.log_level)
 

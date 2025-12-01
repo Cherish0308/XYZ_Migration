@@ -30,13 +30,13 @@ class FakeS3Repo:
         )
 
     # Unused interface methods in this test
-    def delete_object(self, bucket: str, key: str) -> None:  # pragma: no cover
+    def delete_object(self, bucket: str, key: str) -> None:  
         pass
 
-    def list_keys(self, bucket: str, prefix: str):  # pragma: no cover
+    def list_keys(self, bucket: str, prefix: str):  
         return []
 
-    def head_object(self, bucket: str, key: str):  # pragma: no cover
+    def head_object(self, bucket: str, key: str):  
         return {}
 
 

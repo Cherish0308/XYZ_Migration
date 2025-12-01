@@ -13,12 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class S3ObjectStorageRepository(ObjectStorageRepository):
-    """
-    S3-backed implementation of ObjectStorageRepository.
-
-    This class hides all boto3 usage behind a clean interface so the rest of
-    the application can be tested without touching AWS.
-    """
+    
 
     def __init__(self, s3_client: Optional[boto3.client] = None) -> None:
         # Allow injecting a fake/mocked client for tests

@@ -14,12 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class RedshiftWarehouseRepository(WarehouseRepository):
-    """
-    Redshift-backed implementation of WarehouseRepository.
-
-    All direct DB access is encapsulated here so services remain testable
-    and follow dependency inversion.
-    """
+    
 
     def __init__(self, config: AppConfig) -> None:
         self._config = config
@@ -47,12 +42,7 @@ class RedshiftWarehouseRepository(WarehouseRepository):
         file_format: str,
         copy_options: Optional[List[str]] = None,
     ) -> None:
-        """
-        Execute a Redshift COPY command from S3.
-
-        file_format examples: 'CSV', 'PARQUET'
-        copy_options examples: ['IGNOREHEADER 1', 'TIMEFORMAT AS \'auto\'']
-        """
+        
         copy_options = copy_options or []
         options_str = " ".join(copy_options)
         sql = f"""
@@ -69,9 +59,7 @@ class RedshiftWarehouseRepository(WarehouseRepository):
         self.execute_sql(sql, params=(s3_uri, iam_role_arn))
 
     def execute_sql(self, sql: str, params: Optional[Tuple] = None) -> None:
-        """
-        Execute a SQL statement without returning rows.
-        """
+        
         if self._config.dry_run:
             logger.info("DRY RUN - would execute SQL", extra={"sql": sql, "params": params})
             return
@@ -85,9 +73,7 @@ class RedshiftWarehouseRepository(WarehouseRepository):
             raise RepositoryError("Redshift SQL execution failed") from exc
 
     def fetch_one(self, sql: str, params: Optional[Tuple] = None) -> Optional[Tuple]:
-        """
-        Execute a SQL query and return a single row, or None.
-        """
+        
         if self._config.dry_run:
             logger.info("DRY RUN - would fetch SQL", extra={"sql": sql, "params": params})
             return None

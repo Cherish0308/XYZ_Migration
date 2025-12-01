@@ -6,13 +6,7 @@ from app.repositories.base import MetadataRepository
 
 
 class InMemoryMetadataRepository(MetadataRepository):
-    """
-    Simple in-memory schema registry for XYZ pricing migration.
-
-    In a real system this might be backed by AWS Glue, a dbt manifest, or a
-    dedicated metadata service. Keeping it in-memory makes unit tests fast
-    and keeps business logic decoupled from infrastructure.
-    """
+    
 
     def __init__(self) -> None:
         # column_name -> logical_type

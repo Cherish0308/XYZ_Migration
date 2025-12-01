@@ -17,16 +17,16 @@ class FakeS3Repo:
         self.written.append({"bucket": bucket, "key": key, "body": body})
 
     # Unused methods to satisfy interface
-    def copy_object(self, *args, **kwargs):  # pragma: no cover
+    def copy_object(self, *args, **kwargs):  
         pass
 
-    def delete_object(self, *args, **kwargs):  # pragma: no cover
+    def delete_object(self, *args, **kwargs):  
         pass
 
-    def list_keys(self, *args, **kwargs):  # pragma: no cover
+    def list_keys(self, *args, **kwargs):  
         return []
 
-    def head_object(self, *args, **kwargs):  # pragma: no cover
+    def head_object(self, *args, **kwargs):  
         return {}
 
 

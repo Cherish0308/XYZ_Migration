@@ -14,23 +14,13 @@ class TransformedBatch:
 
 
 class TransformationService:
-    """
-    Responsible for type-converting records according to the logical schema.
-
-    - Input: dict of strings (from CSV)
-    - Output: dict with proper Python types ready for Redshift load
-    """
+    
 
     def __init__(self, metadata_repo: MetadataRepository) -> None:
         self._metadata_repo = metadata_repo
 
     def transform_row(self, table_name: str, raw_row: Dict[str, str]) -> Dict[str, Any]:
-        """
-        Transform a single row based on the table's logical schema.
-
-        Unknown columns are ignored (caller is expected to pre-filter using
-        SchemaValidator.filter_known_columns()).
-        """
+        
         schema = self._metadata_repo.get_table_schema(table_name)
         transformed: Dict[str, Any] = {}
 
@@ -60,9 +50,7 @@ class TransformationService:
         return transformed
 
     def transform_rows(self, table_name: str, rows: List[Dict[str, str]]) -> TransformedBatch:
-        """
-        Convenience helper to transform many rows in one call.
-        """
+        
         return TransformedBatch(
             table_name=table_name,
             records=[self.transform_row(table_name, row) for row in rows],

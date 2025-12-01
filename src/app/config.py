@@ -6,13 +6,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class AppConfig:
-    """
-    Central application configuration.
-
-    All AWS / Redshift / S3 settings come from here so that the rest of the
-    codebase never calls os.getenv() directly. This makes testing and
-    environment switching much easier.
-    """
+    
 
     env: str
     app_name: str
@@ -36,12 +30,7 @@ class AppConfig:
 
     @classmethod
     def from_env(cls) -> "AppConfig":
-        """
-        Build AppConfig from environment variables.
-
-        This should be called only at process boundaries (Lambda handlers,
-        CLI entrypoints). Other code receives an AppConfig instance via DI.
-        """
+       
         env = os.getenv("APP_ENV", "dev")
         app_name = os.getenv("APP_NAME", "xyz-pricing-migration")
         log_level = os.getenv("LOG_LEVEL", "INFO")

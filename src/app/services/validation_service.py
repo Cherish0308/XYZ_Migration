@@ -25,28 +25,14 @@ class FileValidationReport:
 
 
 class ValidationService:
-    """
-    High-level validation orchestrator.
-
-    Responsibility:
-      - Parse CSV text
-      - Validate header using SchemaValidator
-      - Run business rules using BusinessValidator
-      - Return a structured report (no I/O side effects)
-    """
+    
 
     def __init__(self, schema_validator: SchemaValidator, business_validator: BusinessValidator) -> None:
         self._schema_validator = schema_validator
         self._business_validator = business_validator
 
     def validate_csv(self, table_name: str, csv_text: str) -> FileValidationReport:
-        """
-        Validate a CSV payload for a given table.
-
-        This method is intentionally pure: it does not touch S3 or Redshift.
-        Lambdas or other orchestration code are responsible for reading the
-        file and persisting the report.
-        """
+        
         # csv.DictReader expects an iterable of lines
         reader = csv.DictReader(csv_text.splitlines())
 
