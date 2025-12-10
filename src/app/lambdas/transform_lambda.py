@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-import csv
-import io
 import logging
-import urllib.parse
-
 from typing import Any, Dict, List
 
 from app.config import AppConfig
@@ -13,6 +9,11 @@ from app.exceptions import AppError
 from app.repositories import InMemoryMetadataRepository, S3ObjectStorageRepository
 from app.services import TransformationService
 from app.utils import s3_path_utils
+from app.lambdas.transform_lambda_helpers import (
+    S3EventParser,
+    CSVTransformProcessor,
+    S3TransformOrchestrator,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,49 +23,40 @@ def _build_transformation_service() -> TransformationService:
     return TransformationService(metadata_repo)
 
 
-def _extract_table_and_period_from_key(validated_prefix: str, key: str) -> Dict[str, str]:
-    
-    if key.startswith(validated_prefix + "/"):
-        suffix = key[len(validated_prefix) + 1 :]
-    else:
-        suffix = key
-
-    parts = suffix.split("/")
-    if len(parts) < 3:
-        raise ValueError(f"Unexpected key structure for transform: {key}")
-
-    table_name = parts[0]
-    period_part = parts[1]
-
-    if not period_part.startswith("forecast_period="):
-        raise ValueError(f"Unexpected period segment in key for transform: {key}")
-
-    logical_period = period_part.split("=", 1)[1]
-    return {"table_name": table_name, "logical_period": logical_period}
-
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    
+    """Lambda handler for transforming CSV files from S3."""
     config = AppConfig.from_env()
     configure_logging(config.app_name, config.log_level)
 
     logger.info("transform_lambda invoked", extra={"env": config.env})
 
+    # Initialize dependencies
     s3_repo = S3ObjectStorageRepository()
     transform_service = _build_transformation_service()
+    csv_processor = CSVTransformProcessor(transform_service)
+    orchestrator = S3TransformOrchestrator(s3_repo, csv_processor)
+    event_parser = S3EventParser()
 
     results: List[Dict[str, Any]] = []
 
-    for record in event.get("Records", []):
-        bucket = record["s3"]["bucket"]["name"]
-        raw_key = record["s3"]["object"]["key"]
-        key = urllib.parse.unquote_plus(raw_key)
+    # Parse S3 events
+    try:
+        records = event_parser.parse_records(event)
+    except Exception as exc:
+        logger.exception("Failed to parse S3 event records")
+        return {"results": [{"error": str(exc), "outcome": "ERROR"}]}
+
+    for record in records:
+        bucket = record.bucket
+        key = record.key
 
         logger.info(
             "Processing transform S3 record",
             extra={"bucket": bucket, "key": key},
         )
 
+        # Validate bucket
         if bucket != config.s3_bucket:
             logger.warning(
                 "Skipping record for unexpected bucket in transform",
@@ -73,63 +65,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             continue
 
         try:
-            meta = _extract_table_and_period_from_key(config.s3_validated_prefix, key)
-            table_name = meta["table_name"]
-            logical_period = meta["logical_period"]
-
-            csv_text = s3_repo.read_text(bucket, key)
-
-            reader = csv.DictReader(csv_text.splitlines())
-            if reader.fieldnames is None:
-                raise ValueError("Validated CSV has no header")
-
-            header = [h.strip() for h in reader.fieldnames]
-
-            transformed_rows: List[Dict[str, Any]] = []
-
-            for row in reader:
-                normalized = {k.strip(): v for k, v in row.items() if k is not None}
-                transformed = transform_service.transform_row(table_name, normalized)
-                # Convert back to string representation for CSV write
-                transformed_rows.append({col: "" if v is None else str(v) for col, v in transformed.items()})
-
-            # Write out normalized CSV
-            output = io.StringIO()
-            writer = csv.DictWriter(output, fieldnames=header)
-            writer.writeheader()
-
-            for row in transformed_rows:
-                # Only keep columns in the original header to keep file shape stable
-                writer.writerow({col: row.get(col, "") for col in header})
-
-            dest_key = s3_path_utils.build_transformed_key(
-                config.s3_transformed_prefix,
-                table_name,
-                logical_period,
+            # Parse S3 path to extract table name and period
+            parsed = s3_path_utils.parse_table_and_period_from_key(
+                config.s3_validated_prefix,
                 key,
             )
+            table_name = parsed.table_name
+            logical_period = parsed.logical_period
 
-            s3_repo.write_text(config.s3_bucket, dest_key, output.getvalue())
-
-            logger.info(
-                "Transform completed for file",
-                extra={
-                    "table_name": table_name,
-                    "logical_period": logical_period,
-                    "dest_key": dest_key,
-                    "row_count": len(transformed_rows),
-                },
+            # Transform and upload
+            result = orchestrator.transform_and_upload(
+                bucket=bucket,
+                source_key=key,
+                table_name=table_name,
+                logical_period=logical_period,
+                transformed_prefix=config.s3_transformed_prefix,
             )
-
-            results.append(
-                {
-                    "table_name": table_name,
-                    "logical_period": logical_period,
-                    "dest_key": dest_key,
-                    "row_count": len(transformed_rows),
-                    "outcome": "SUCCEEDED",
-                }
-            )
+            results.append(result)
 
         except AppError as exc:
             logger.error(
@@ -159,3 +111,4 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             )
 
     return {"results": results}
+ 
