@@ -13,27 +13,6 @@ from app.utils import s3_path_utils, json_utils, idempotency
 logger = logging.getLogger(__name__)
 
 
-def _extract_table_and_period_from_key(raw_prefix: str, key: str) -> Dict[str, str]:
-   
-    if key.startswith(raw_prefix + "/"):
-        suffix = key[len(raw_prefix) + 1 :]
-    else:
-        suffix = key
-
-    parts = suffix.split("/")
-    if len(parts) < 3:
-        raise ValueError(f"Unexpected key structure for ingestion: {key}")
-
-    table_name = parts[0]
-    period_part = parts[1]
-
-    if not period_part.startswith("forecast_period="):
-        raise ValueError(f"Unexpected period segment in key for ingestion: {key}")
-
-    logical_period = period_part.split("=", 1)[1]
-    return {"table_name": table_name, "logical_period": logical_period}
-
-
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     config = AppConfig.from_env()
@@ -62,9 +41,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             continue
 
         try:
-            meta = _extract_table_and_period_from_key(config.s3_raw_prefix, key)
-            table_name = meta["table_name"]
-            logical_period = meta["logical_period"]
+            parsed = s3_path_utils.parse_table_and_period_from_key(config.s3_raw_prefix, key)
+            table_name = parsed.table_name
+            logical_period = parsed.logical_period
 
             head = s3_repo.head_object(bucket, key)
             payload = {
