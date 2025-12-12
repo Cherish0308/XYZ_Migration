@@ -26,29 +26,6 @@ def _build_validation_service() -> ValidationService:
     return ValidationService(schema_validator, business_validator)
 
 
-def _extract_table_and_period_from_key(raw_prefix: str, key: str) -> Dict[str, str]:
-    
-    # Remove any leading prefix like "raw/"
-    if key.startswith(raw_prefix + "/"):
-        suffix = key[len(raw_prefix) + 1 :]
-    else:
-        suffix = key
-
-    parts = suffix.split("/")
-    if len(parts) < 3:
-        raise ValueError(f"Unexpected key structure: {key}")
-
-    table_name = parts[0]
-
-    # forecast_period=YYYY-MM
-    period_part = parts[1]
-    if not period_part.startswith("forecast_period="):
-        raise ValueError(f"Unexpected period segment in key: {key}")
-    logical_period = period_part.split("=", 1)[1]
-
-    return {"table_name": table_name, "logical_period": logical_period}
-
-
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
    
     # Bootstrap config + logging
@@ -81,9 +58,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             continue
 
         try:
-            meta = _extract_table_and_period_from_key(config.s3_raw_prefix, key)
-            table_name = meta["table_name"]
-            logical_period = meta["logical_period"]
+            parsed = s3_path_utils.parse_table_and_period_from_key(config.s3_raw_prefix, key)
+            table_name = parsed.table_name
+            logical_period = parsed.logical_period
 
             csv_text = s3_repo.read_text(bucket, key)
             report = validation_service.validate_csv(table_name, csv_text)
