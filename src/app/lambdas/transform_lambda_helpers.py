@@ -21,7 +21,7 @@ class S3EventRecord:
 
 
 class S3EventParser:
-    """Parses Lambda S3 event payloads into normalized records."""
+   
     
     @staticmethod
     def parse_records(event: Dict[str, Any]) -> List[S3EventRecord]:
@@ -38,7 +38,7 @@ class S3EventParser:
 
 
 class CSVTransformProcessor:
-    """Transforms CSV rows using the provided transformation service and writes CSV output."""
+    
     
     def __init__(self, transform_service: TransformationService) -> None:
         self._transform_service = transform_service
