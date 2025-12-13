@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from app.repositories import S3ObjectStorageRepository, MetadataRepository
+from app.repositories import MetadataRepository, S3ObjectStorageRepository
 from app.services import TransformationService
 from app.utils import s3_path_utils
 

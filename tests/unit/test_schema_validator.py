@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from app.validators.schema_validator import SchemaValidator
-from app.repositories.metadata_repository import InMemoryMetadataRepository
 from app.exceptions import SchemaMismatchError
+from app.repositories.metadata_repository import InMemoryMetadataRepository
+from app.validators.schema_validator import SchemaValidator
 
 
 @pytest.fixture

@@ -3,12 +3,12 @@ from __future__ import annotations
 import pytest
 
 from app.utils.s3_path_utils import (
-    build_validated_key,
-    build_error_key,
-    build_transformed_key,
-    build_recon_key,
-    parse_table_and_period_from_key,
     ParsedS3Path,
+    build_error_key,
+    build_recon_key,
+    build_transformed_key,
+    build_validated_key,
+    parse_table_and_period_from_key,
 )
 
 

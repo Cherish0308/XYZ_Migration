@@ -8,7 +8,7 @@ from app.config import AppConfig
 from app.exceptions import AppError
 from app.logging_config import configure_logging
 from app.repositories import S3ObjectStorageRepository
-from app.utils import s3_path_utils, json_utils, idempotency
+from app.utils import idempotency, json_utils, s3_path_utils
 
 logger = logging.getLogger(__name__)
 

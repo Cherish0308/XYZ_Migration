@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List
 
 from app.repositories import MetadataRepository
-from app.utils.time_utils import parse_date, parse_timestamp, normalize_period
+from app.utils.time_utils import normalize_period, parse_date, parse_timestamp
 
 
 @dataclass

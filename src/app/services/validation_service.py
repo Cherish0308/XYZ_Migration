@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List
 
 from app.exceptions import BusinessRuleViolation
-from app.validators import SchemaValidator, BusinessValidator
+from app.validators import BusinessValidator, SchemaValidator
 
 
 @dataclass

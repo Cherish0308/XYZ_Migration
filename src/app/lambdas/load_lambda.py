@@ -9,7 +9,8 @@ from app.exceptions import AppError
 from app.logging_config import configure_logging
 from app.repositories import InMemoryMetadataRepository, RedshiftWarehouseRepository
 from app.services import LoadService
-from app.utils import s3_path_utils  
+from app.utils import s3_path_utils
+
 logger = logging.getLogger(__name__)
 
 

@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from .domain import (
     Employer,
-    GymLocation,
-    ProductPlan,
-    UtilizationRecord,
-    PricingRule,
-    ForecastRun,
+    FileIngestionRecord,
     ForecastOutput,
+    ForecastRun,
+    GymLocation,
     PricingMigrationJob,
     PricingMigrationJobStatus,
-    FileIngestionRecord,
+    PricingRule,
+    ProductPlan,
+    UtilizationRecord,
 )
 
 __all__ = [

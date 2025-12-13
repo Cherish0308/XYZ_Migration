@@ -8,8 +8,8 @@ from app.config import AppConfig
 from app.exceptions import AppError
 from app.logging_config import configure_logging
 from app.repositories import InMemoryMetadataRepository, S3ObjectStorageRepository
-from app.services import TransformationService, DQService
-from app.utils import json_utils, s3_path_utils, idempotency
+from app.services import DQService, TransformationService
+from app.utils import idempotency, json_utils, s3_path_utils
 
 logger = logging.getLogger(__name__)
 

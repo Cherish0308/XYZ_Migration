@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import pytest
-from datetime import datetime, date
+from datetime import date, datetime
 
-from app.utils.time_utils import parse_date, parse_timestamp, normalize_period
+import pytest
+
+from app.utils.time_utils import normalize_period, parse_date, parse_timestamp
 
 
 class TestParseDate:

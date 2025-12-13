@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import List, Optional, Tuple
 
 from app.config import AppConfig
-from app.repositories.metadata_repository import InMemoryMetadataRepository
 from app.repositories.base import WarehouseRepository
+from app.repositories.metadata_repository import InMemoryMetadataRepository
 from app.services.load_service import LoadService
 
 

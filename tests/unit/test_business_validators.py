@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import pytest
+
 from app.validators.business_validator import (
-    UtilizationHistoryValidator,
-    PricingRulesValidator,
-    ForecastsValidator,
-    ForecastRunsValidator,
     BusinessRuleViolation,
+    ForecastRunsValidator,
+    ForecastsValidator,
+    PricingRulesValidator,
+    UtilizationHistoryValidator,
 )
+
 
 def test_utilization_history_validator_valid():
     validator = UtilizationHistoryValidator()

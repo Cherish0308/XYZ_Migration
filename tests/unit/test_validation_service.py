@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from app.repositories.metadata_repository import InMemoryMetadataRepository
-from app.validators import SchemaValidator, BusinessValidator
 from app.services.validation_service import ValidationService
+from app.validators import BusinessValidator, SchemaValidator
 
 
 def _make_service() -> ValidationService:

@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import os
-import pytest
 from pathlib import Path
 from unittest import mock
 
-from app.config_loader import ConfigLoader, AppConfig
+import pytest
+
+from app.config_loader import AppConfig, ConfigLoader
 
 
 class TestConfigLoader:

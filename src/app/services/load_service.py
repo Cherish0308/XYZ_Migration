@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List
 
 from app.config import AppConfig
-from app.repositories import WarehouseRepository, MetadataRepository
+from app.repositories import MetadataRepository, WarehouseRepository
 
 
 @dataclass(frozen=True)
